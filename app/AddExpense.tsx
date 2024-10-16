@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { router } from 'expo-router';
 
-const AddExpenseScreen = () => {
+const AddExpenseScreen = ({addExpense, navigation} : { addExpense: (amount: string, category: string) => void; navigation: any}) => {
   const [amount, setAmount] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Groceries');
-  const [name, setName] = useState('');
+ 
 
   const categories = ['Groceries', 'Rent', 'Utilities', 'Transport', 'Other'];
+
+  const handleAddExpense = () => {
+    if (amount) {
+        addExpense(amount, selectedCategory);
+        setAmount('');
+       navigation.navigate('expenseList');
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -15,12 +24,6 @@ const AddExpenseScreen = () => {
       <Text style={styles.headerText}>Add Expense</Text>
 
       {/* Expense Amount Input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Expense Name"
-        value={name}
-        onChangeText={setName}
-      />
 
       <TextInput
         style={styles.input}
@@ -45,7 +48,7 @@ const AddExpenseScreen = () => {
       </View>
 
       {/* Add Expense Button */}
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleAddExpense}>
         <Text style={styles.buttonText}>Add Expense</Text>
       </TouchableOpacity>
     </View>

@@ -2,24 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 
 interface Expense {
-  name: string;
+  id: string;
   amount: string;
   category: string;
 }
 
-const ExpensesListScreen = () => {
+const ExpensesListScreen = ({ expenses }: {expenses: Expense[]}) => {
   // Sample data for expenses
-  const [expenses, setExpenses] = useState<Expense[]>([
-    { name: 'ABC', amount: '50', category: 'Groceries' },
-    { name: 'DEF', amount: '100', category: 'Rent' },
-    { name: 'GHI', amount: '30', category: 'Transport' },
-    { name: 'JKL', amount: '20', category: 'Utilities' },
-    { name: 'MNO', amount: '15', category: 'Other' },
-  ]);
-
   const renderExpenseItem = ({ item }: { item: Expense }) => (
     <View style={styles.expenseItem}>
-        <Text>{item.name}</Text>
+       
       <Text style={styles.expenseText}>${item.amount}</Text>
       <Text style={styles.categoryText}>{item.category}</Text>
     </View>
