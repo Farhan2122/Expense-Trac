@@ -1,53 +1,105 @@
-// screens/AddExpenseScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
-const AddExpenseScreen = ({ navigation }) => {
-  const [description, setDescription] = useState('');
+const AddExpenseScreen = () => {
   const [amount, setAmount] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('Groceries');
+  const [name, setName] = useState('');
 
-  const saveExpense = async () => {
-    try {
-      const newExpense = {
-        id: Date.now().toString(),
-        description,
-        amount: parseFloat(amount),
-      };
-      const storedExpenses = await AsyncStorage.getItem('expenses');
-      const expenses = storedExpenses ? JSON.parse(storedExpenses) : [];
-      expenses.push(newExpense);
-      await AsyncStorage.setItem('expenses', JSON.stringify(expenses));
-      navigation.goBack();
-    } catch (error) {
-      console.error("Failed to save expense", error);
-    }
-  };
+  const categories = ['Groceries', 'Rent', 'Utilities', 'Transport', 'Other'];
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Description</Text>
+      {/* Header */}
+      <Text style={styles.headerText}>Add Expense</Text>
+
+      {/* Expense Amount Input */}
       <TextInput
         style={styles.input}
-        value={description}
-        onChangeText={setDescription}
+        placeholder="Expense Name"
+        value={name}
+        onChangeText={setName}
       />
-      <Text style={styles.label}>Amount</Text>
+
       <TextInput
         style={styles.input}
+        placeholder="Enter amount"
+        keyboardType="numeric"
         value={amount}
         onChangeText={setAmount}
-        keyboardType="numeric"
       />
-      <Button title="Save" onPress={saveExpense} />
+
+      {/* Category Selector */}
+      <Text style={styles.label}>Select Category:</Text>
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={selectedCategory}
+          onValueChange={(itemValue) => setSelectedCategory(itemValue)}
+          style={styles.picker}
+        >
+          {categories.map((category) => (
+            <Picker.Item key={category} label={category} value={category} />
+          ))}
+        </Picker>
+      </View>
+
+      {/* Add Expense Button */}
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>Add Expense</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  label: { fontSize: 18, marginBottom: 10 },
-  input: { height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 20, paddingHorizontal: 10 },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f8f9fa',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  input: {
+    height: 50,
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 20,
+    fontSize: 16,
+    backgroundColor: '#ffffff',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  pickerContainer: {
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 20,
+    backgroundColor: '#ffffff',
+  },
+  picker: {
+    height: 50,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#ffffff',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default AddExpenseScreen;

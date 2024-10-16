@@ -1,50 +1,109 @@
-// screens/HomeScreen.js
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { PieChart } from 'react-native-chart-kit';
 
-const HomeScreen = ({ navigation }) => {
-  const [expenses, setExpenses] = useState([]);
-  const [total, setTotal] = useState(0);
+const screenWidth = Dimensions.get('window').width;
 
-  useEffect(() => {
-    // Load expenses from AsyncStorage
-    const loadExpenses = async () => {
-      try {
-        const storedExpenses = await AsyncStorage.getItem('expenses');
-        const parsedExpenses = storedExpenses ? JSON.parse(storedExpenses) : [];
-        setExpenses(parsedExpenses);
-        const sum = parsedExpenses.reduce((acc, expense) => acc + expense.amount, 0);
-        setTotal(sum);
-      } catch (error) {
-        console.error("Failed to load expenses", error);
-      }
-    };
-    const unsubscribe = navigation.addListener('focus', loadExpenses);
-    return unsubscribe;
-  }, [navigation]);
+const Home = () => {
+  const data = [
+    {
+      name: 'Groceries',
+      population: 35,
+      color: '#f54242',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
+    {
+      name: 'Rent',
+      population: 30,
+      color: '#42f54e',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
+    {
+      name: 'Utilities',
+      population: 15,
+      color: '#4287f5',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
+    {
+      name: 'Transport',
+      population: 10,
+      color: '#f5e142',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
+    {
+      name: 'Other',
+      population: 10,
+      color: '#9e42f5',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
+  ];
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Total: ${total}</Text>
-      <FlatList
-        data={expenses}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text>{item.description} - ${item.amount}</Text>
-          </View>
-        )}
+      {/* Header */}
+      <Text style={styles.headerText}>Expense Tracker</Text>
+      
+      {/* Pie Chart */}
+      <PieChart
+        data={data}
+        width={screenWidth}
+        height={220}
+        chartConfig={{
+          backgroundColor: '#ffffff',
+          backgroundGradientFrom: '#ffffff',
+          backgroundGradientTo: '#ffffff',
+          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        }}
+        accessor={'population'}
+        backgroundColor={'transparent'}
+        paddingLeft={'15'}
+        absolute
       />
-      <Button title="Add Expense" onPress={() => navigation.navigate('AddExpense')} />
+
+      {/* Show Task List Button */}
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/expenseList')}>
+        <Text style={styles.buttonText}>Show Task List</Text>
+      </TouchableOpacity>
+
+      {/* Add Task Button */}
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/addExpense')}>
+        <Text style={styles.buttonText}>Add Tasks</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold' },
-  item: { padding: 10, borderBottomWidth: 1, borderColor: '#ccc' },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f8f9fa',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#ffffff',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
-export default HomeScreen;
+export default Home;

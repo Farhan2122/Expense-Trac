@@ -1,20 +1,22 @@
-// navigation/StackNavigator.js
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import Home from './home';
+import { Stack } from 'expo-router';
 
-import HomeScreen from './Home';
-import AddExpenseScreen from './AddExpense';
 
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
-const StackNavigator = () => (
-  
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
-    </Stack.Navigator>
- 
-);
-
-export default StackNavigator;
+export default function App() {
+  return (
+   
+      <Stack initialRouteName='home' screenOptions={{headerShown: false}}> 
+       
+        <Stack.Screen name="addExpense" options={{headerShown: false}}/>
+        <Stack.Screen name="expenseList" options={{headerShown: false}}/>
+       
+      
+      </Stack>
+    
+  );
+}
